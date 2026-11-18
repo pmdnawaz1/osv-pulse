@@ -1,0 +1,6 @@
+version: 1
+
+on:
+  pull_request:
+    enabled: true
+    diff_only: true

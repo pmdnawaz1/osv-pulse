@@ -9,6 +9,8 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import os
 import sys
@@ -43,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--warn-only", action="store_true", help="Never exit non-zero because of findings"
     )
-    parser.add_argument("--format", choices=["text", "json"], default="text")
+    parser.add_argument("--format", choices=["text", "json", "csv"], default="text")
     parser.add_argument("--output", "-o", help="Write output to a file instead of stdout")
     parser.add_argument(
         "--check-config",
@@ -51,6 +53,51 @@ def build_parser() -> argparse.ArgumentParser:
         help="Validate and print the resolved config, then exit",
     )
     return parser
+
+
+CSV_COLUMNS = (
+    "repository",
+    "mode",
+    "file",
+    "package",
+    "version",
+    "ecosystem",
+    "advisory",
+    "aliases",
+    "severity",
+    "cvss",
+    "fixed_version",
+    "blocking",
+    "summary",
+    "url",
+)
+
+
+def render_csv(findings, blocking_ids: set[str], repo: Path, mode: str) -> str:
+    """Return a flat CSV report, one row per finding."""
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=CSV_COLUMNS)
+    writer.writeheader()
+    for finding in findings:
+        writer.writerow(
+            {
+                "repository": str(repo),
+                "mode": mode,
+                "file": finding.path,
+                "package": finding.package,
+                "version": finding.version,
+                "ecosystem": finding.ecosystem,
+                "advisory": finding.canonical,
+                "aliases": ";".join(sorted(finding.all_ids - {finding.canonical})),
+                "severity": finding.severity,
+                "cvss": "" if finding.cvss is None else finding.cvss,
+                "fixed_version": finding.fixed_version or "",
+                "blocking": "yes" if finding.canonical in blocking_ids else "no",
+                "summary": finding.summary,
+                "url": f"https://osv.dev/vulnerability/{finding.canonical}",
+            }
+        )
+    return buffer.getvalue()
 
 
 def load_local_config(repo: Path, config_path: str | None) -> Config:
@@ -109,7 +156,9 @@ def run(argv: list[str] | None = None) -> int:
         findings = [item for item in findings if not config.is_ignored(item.all_ids)]
         blocking = [item for item in findings if config.is_blocking(item)]
 
-        if args.format == "json":
+        if args.format == "csv":
+            output = render_csv(findings, {item.canonical for item in blocking}, repo, "diff" if args.diff_against else "full")
+        elif args.format == "json":
             output = json.dumps(
                 {
                     "repo": str(repo),
@@ -134,8 +183,9 @@ def run(argv: list[str] | None = None) -> int:
                 annotations_truncated=False,
             )
 
+        output = output.rstrip("\n") + "\n"
         if args.output:
-            Path(args.output).write_text(output + "\n", encoding="utf-8")
+            Path(args.output).write_text(output, encoding="utf-8")
             print(f"osv-pulse: wrote {args.output}", file=sys.stderr)
         else:
             print(output)
@@ -159,7 +209,11 @@ def _config_to_dict(config: Config) -> dict[str, object]:
     return {
         "config_file": config.config_file,
         "version": config.version,
-        "pull_request": {"enabled": config.pr_enabled, "diff_only": config.pr_diff_only},
+        "pull_request": {
+            "enabled": config.pr_enabled,
+            "diff_only": config.pr_diff_only,
+            "comment": config.pr_comment_enabled,
+        },
         "merge": {"enabled": config.merge_enabled},
         "push": {"enabled": config.push_enabled, "branches": config.push_branches},
         "policy": {

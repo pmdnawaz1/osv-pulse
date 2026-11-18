@@ -1,0 +1,847 @@
+{
+  "generated_at": "2026-11-18 23:39 UTC",
+  "scanner_version": "2.7.1",
+  "note": "Generated from OSV-Scanner output. Advisory data may change over time.",
+  "projects": [
+    {
+      "project": "npm-legacy-lockfile",
+      "repository": "example-projects/npm-legacy-lockfile",
+      "mode": "full",
+      "config": {
+        "config_file": null,
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "."
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": [
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-p6mc-m468-83gw"
+          ],
+          "aliases": [
+            "CVE-2020-8203"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Prototype Pollution in lodash",
+          "fixed_version": "4.17.19",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-8203",
+          "all_ids": [
+            "CVE-2020-8203",
+            "GHSA-p6mc-m468-83gw"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-35jh-r3h4-6jhm"
+          ],
+          "aliases": [
+            "CVE-2021-23337"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Command Injection in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2021-23337",
+          "all_ids": [
+            "CVE-2021-23337",
+            "GHSA-35jh-r3h4-6jhm"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-r5fr-rjxr-66jc"
+          ],
+          "aliases": [
+            "CVE-2026-4800"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "lodash vulnerable to Code Injection via `_.template` imports key names",
+          "fixed_version": "4.18.0",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-4800",
+          "all_ids": [
+            "CVE-2026-4800",
+            "GHSA-r5fr-rjxr-66jc"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-29mw-wpgm-hmr9"
+          ],
+          "aliases": [
+            "CVE-2020-28500"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Regular Expression Denial of Service (ReDoS) in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-28500",
+          "all_ids": [
+            "CVE-2020-28500",
+            "GHSA-29mw-wpgm-hmr9"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-xxjr-mmjv-4gpg"
+          ],
+          "aliases": [
+            "CVE-2025-13465"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions",
+          "fixed_version": "4.17.23",
+          "source_type": "lockfile",
+          "canonical": "CVE-2025-13465",
+          "all_ids": [
+            "CVE-2025-13465",
+            "GHSA-xxjr-mmjv-4gpg"
+          ]
+        }
+      ]
+    },
+    {
+      "project": "python-requirements",
+      "repository": "example-projects/python-requirements",
+      "mode": "full",
+      "config": {
+        "config_file": null,
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "."
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": [
+        {
+          "path": "requirements.txt",
+          "package": "anyio",
+          "version": "4.9.0",
+          "ecosystem": "PyPI",
+          "vuln_ids": [
+            "GHSA-82r6-8w77-94w6",
+            "PYSEC-2026-4025"
+          ],
+          "aliases": [
+            "CVE-2026-63374",
+            "GHSA-82r6-8w77-94w6",
+            "PYSEC-2026-4025"
+          ],
+          "severity": "CRITICAL",
+          "cvss": null,
+          "summary": "AnyIO: TLSStream IDNA 2003 host name encoding enables potential TLS certificate spoofing",
+          "fixed_version": "4.14.2",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-63374",
+          "all_ids": [
+            "CVE-2026-63374",
+            "GHSA-82r6-8w77-94w6",
+            "PYSEC-2026-4025"
+          ]
+        },
+        {
+          "path": "requirements.txt",
+          "package": "anyio",
+          "version": "4.9.0",
+          "ecosystem": "PyPI",
+          "vuln_ids": [
+            "GHSA-5p39-cfhj-2xmp",
+            "PYSEC-2026-4024"
+          ],
+          "aliases": [
+            "CVE-2026-64847",
+            "GHSA-5p39-cfhj-2xmp",
+            "PYSEC-2026-4024"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "AnyIO process-pool workers can block indefinitely on undrained stderr",
+          "fixed_version": "4.14.2",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-64847",
+          "all_ids": [
+            "CVE-2026-64847",
+            "GHSA-5p39-cfhj-2xmp",
+            "PYSEC-2026-4024"
+          ]
+        },
+        {
+          "path": "requirements.txt",
+          "package": "idna",
+          "version": "3.9.0",
+          "ecosystem": "PyPI",
+          "vuln_ids": [
+            "GHSA-65pc-fj4g-8rjx",
+            "PYSEC-2026-215"
+          ],
+          "aliases": [
+            "CVE-2026-45409",
+            "GHSA-65pc-fj4g-8rjx",
+            "PYSEC-2026-215"
+          ],
+          "severity": "MEDIUM",
+          "cvss": 5.3,
+          "summary": "Internationalized Domain Names in Applications (IDNA) for Python provides support for Internationalized Domain Names in Applications (IDNA) and Unicode IDNA Compatibility Processing. In versions prior to 3.15, payloads such as `\"\\u0660\" * N` or `\"\\u30fb\" * N + \"\\u6f22\"` utilize the `valid_contexto` function prior to length rejection, and for high values of `N` will take a long time to process. This is the same issue as CVE-2024-3651, however the original remediation in 2024 was not a complete fi",
+          "fixed_version": "3.15",
+          "source_type": "unknown",
+          "canonical": "CVE-2026-45409",
+          "all_ids": [
+            "CVE-2026-45409",
+            "GHSA-65pc-fj4g-8rjx",
+            "PYSEC-2026-215"
+          ]
+        }
+      ]
+    },
+    {
+      "project": "go-module",
+      "repository": "example-projects/go-module",
+      "mode": "full",
+      "config": {
+        "config_file": null,
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "."
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": [
+        {
+          "path": "go.mod",
+          "package": "github.com/jackc/pgx/v5",
+          "version": "5.5.5",
+          "ecosystem": "Go",
+          "vuln_ids": [
+            "GHSA-xgrm-4fwx-7qm8",
+            "GO-2026-4771"
+          ],
+          "aliases": [
+            "CVE-2026-33815",
+            "GHSA-xgrm-4fwx-7qm8",
+            "GO-2026-4771"
+          ],
+          "severity": "CRITICAL",
+          "cvss": null,
+          "summary": "pgx contains memory-safety vulnerability",
+          "fixed_version": "5.9.0",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-33815",
+          "all_ids": [
+            "CVE-2026-33815",
+            "GHSA-xgrm-4fwx-7qm8",
+            "GO-2026-4771"
+          ]
+        },
+        {
+          "path": "go.mod",
+          "package": "github.com/jackc/pgx/v5",
+          "version": "5.5.5",
+          "ecosystem": "Go",
+          "vuln_ids": [
+            "GHSA-9jj7-4m8r-rfcm",
+            "GO-2026-4772"
+          ],
+          "aliases": [
+            "CVE-2026-33816",
+            "GHSA-9jj7-4m8r-rfcm",
+            "GO-2026-4772"
+          ],
+          "severity": "CRITICAL",
+          "cvss": null,
+          "summary": "Memory-safety vulnerability in github.com/jackc/pgx/v5.",
+          "fixed_version": "5.9.0",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-33816",
+          "all_ids": [
+            "CVE-2026-33816",
+            "GHSA-9jj7-4m8r-rfcm",
+            "GO-2026-4772"
+          ]
+        },
+        {
+          "path": "go.mod",
+          "package": "github.com/jackc/pgx/v5",
+          "version": "5.5.5",
+          "ecosystem": "Go",
+          "vuln_ids": [
+            "GHSA-j88v-2chj-qfwx",
+            "GO-2026-5004"
+          ],
+          "aliases": [
+            "CVE-2026-41889",
+            "GHSA-j88v-2chj-qfwx",
+            "GO-2026-5004"
+          ],
+          "severity": "LOW",
+          "cvss": null,
+          "summary": "pgx: SQL Injection via placeholder confusion with dollar quoted string literals",
+          "fixed_version": "5.9.2",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-41889",
+          "all_ids": [
+            "CVE-2026-41889",
+            "GHSA-j88v-2chj-qfwx",
+            "GO-2026-5004"
+          ]
+        }
+      ]
+    },
+    {
+      "project": "npm-monorepo",
+      "repository": "example-projects/npm-monorepo",
+      "mode": "full",
+      "config": {
+        "config_file": ".osv-pulse.yml",
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "frontend",
+            "backend"
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": [
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-cg2g-xh64-v4q7"
+          ],
+          "aliases": [
+            "CVE-2026-116804"
+          ],
+          "severity": "CRITICAL",
+          "cvss": null,
+          "summary": "DOMPurify SAFE_FOR_TEMPLATES bypass: split template expressions survive in attached shadow root content on DOM output modes",
+          "fixed_version": "3.4.17",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-116804",
+          "all_ids": [
+            "CVE-2026-116804",
+            "GHSA-cg2g-xh64-v4q7"
+          ]
+        },
+        {
+          "path": "backend/package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-p6mc-m468-83gw"
+          ],
+          "aliases": [
+            "CVE-2020-8203"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Prototype Pollution in lodash",
+          "fixed_version": "4.17.19",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-8203",
+          "all_ids": [
+            "CVE-2020-8203",
+            "GHSA-p6mc-m468-83gw"
+          ]
+        },
+        {
+          "path": "backend/package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-35jh-r3h4-6jhm"
+          ],
+          "aliases": [
+            "CVE-2021-23337"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Command Injection in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2021-23337",
+          "all_ids": [
+            "CVE-2021-23337",
+            "GHSA-35jh-r3h4-6jhm"
+          ]
+        },
+        {
+          "path": "backend/package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-r5fr-rjxr-66jc"
+          ],
+          "aliases": [
+            "CVE-2026-4800"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "lodash vulnerable to Code Injection via `_.template` imports key names",
+          "fixed_version": "4.18.0",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-4800",
+          "all_ids": [
+            "CVE-2026-4800",
+            "GHSA-r5fr-rjxr-66jc"
+          ]
+        },
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-mrv2-3pqr-j5jr"
+          ],
+          "aliases": [
+            "CVE-2026-116803"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "DOMPurify IN_PLACE: hook that removes a parent or sibling leaves the detached subtree's event handlers armed (incomplete fix for GHSA-p98j-92pf-mc4p)",
+          "fixed_version": "3.4.17",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-116803",
+          "all_ids": [
+            "CVE-2026-116803",
+            "GHSA-mrv2-3pqr-j5jr"
+          ]
+        },
+        {
+          "path": "backend/package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-29mw-wpgm-hmr9"
+          ],
+          "aliases": [
+            "CVE-2020-28500"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Regular Expression Denial of Service (ReDoS) in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-28500",
+          "all_ids": [
+            "CVE-2020-28500",
+            "GHSA-29mw-wpgm-hmr9"
+          ]
+        },
+        {
+          "path": "backend/package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-xxjr-mmjv-4gpg"
+          ],
+          "aliases": [
+            "CVE-2025-13465"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions",
+          "fixed_version": "4.17.23",
+          "source_type": "lockfile",
+          "canonical": "CVE-2025-13465",
+          "all_ids": [
+            "CVE-2025-13465",
+            "GHSA-xxjr-mmjv-4gpg"
+          ]
+        },
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-55q2-fjhq-7xh7"
+          ],
+          "aliases": [
+            "CVE-2026-75838"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "DOMPurify: IN_PLACE hook removal leaves a detached subtree executable, causing XSS",
+          "fixed_version": "3.4.13",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-75838",
+          "all_ids": [
+            "CVE-2026-75838",
+            "GHSA-55q2-fjhq-7xh7"
+          ]
+        },
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-6688-9rhm-gjv2"
+          ],
+          "aliases": [
+            "CVE-2026-109345"
+          ],
+          "severity": "LOW",
+          "cvss": null,
+          "summary": "DOMPurify: IN_PLACE returns a force-removed rawtext root whose text carries attacker markup \u2014 pure HTML reparse executes",
+          "fixed_version": "3.4.16",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-109345",
+          "all_ids": [
+            "CVE-2026-109345",
+            "GHSA-6688-9rhm-gjv2"
+          ]
+        },
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-c6gr-qvv4-5v3f"
+          ],
+          "aliases": [
+            "CVE-2026-116802"
+          ],
+          "severity": "LOW",
+          "cvss": null,
+          "summary": "DOMPurify: SMIL attributeName=href guard is skipped when PARSER_MEDIA_TYPE is application/xhtml+xml",
+          "fixed_version": "3.4.17",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-116802",
+          "all_ids": [
+            "CVE-2026-116802",
+            "GHSA-c6gr-qvv4-5v3f"
+          ]
+        },
+        {
+          "path": "frontend/package-lock.json",
+          "package": "dompurify",
+          "version": "3.4.11",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-c2j3-45gr-mqc4"
+          ],
+          "aliases": [
+            "CVE-2026-66010"
+          ],
+          "severity": "LOW",
+          "cvss": null,
+          "summary": "DOMPurify: `CUSTOM_ELEMENT_HANDLING` bypasses `afterSanitizeElements` for allowed custom elements.",
+          "fixed_version": "3.4.12",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-66010",
+          "all_ids": [
+            "CVE-2026-66010",
+            "GHSA-c2j3-45gr-mqc4"
+          ]
+        }
+      ]
+    },
+    {
+      "project": "clean-project",
+      "repository": "example-projects/clean-project",
+      "mode": "full",
+      "config": {
+        "config_file": null,
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "."
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": []
+    },
+    {
+      "project": "diff-demo",
+      "repository": "example-projects/diff-demo/head",
+      "mode": "diff",
+      "config": {
+        "config_file": ".osv-pulse.yml",
+        "version": 1,
+        "pull_request": {
+          "enabled": true,
+          "diff_only": true,
+          "comment": true
+        },
+        "merge": {
+          "enabled": true
+        },
+        "push": {
+          "enabled": false,
+          "branches": []
+        },
+        "policy": {
+          "fail_on_severity": "HIGH",
+          "block_merge": true,
+          "ignore_cves": []
+        },
+        "scan": {
+          "paths": [
+            "."
+          ],
+          "exclude_paths": []
+        }
+      },
+      "warnings": [],
+      "baseline_count": 0,
+      "ignored_count": 0,
+      "findings": [
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-p6mc-m468-83gw"
+          ],
+          "aliases": [
+            "CVE-2020-8203"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Prototype Pollution in lodash",
+          "fixed_version": "4.17.19",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-8203",
+          "all_ids": [
+            "CVE-2020-8203",
+            "GHSA-p6mc-m468-83gw"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-35jh-r3h4-6jhm"
+          ],
+          "aliases": [
+            "CVE-2021-23337"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "Command Injection in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2021-23337",
+          "all_ids": [
+            "CVE-2021-23337",
+            "GHSA-35jh-r3h4-6jhm"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-r5fr-rjxr-66jc"
+          ],
+          "aliases": [
+            "CVE-2026-4800"
+          ],
+          "severity": "HIGH",
+          "cvss": null,
+          "summary": "lodash vulnerable to Code Injection via `_.template` imports key names",
+          "fixed_version": "4.18.0",
+          "source_type": "lockfile",
+          "canonical": "CVE-2026-4800",
+          "all_ids": [
+            "CVE-2026-4800",
+            "GHSA-r5fr-rjxr-66jc"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-29mw-wpgm-hmr9"
+          ],
+          "aliases": [
+            "CVE-2020-28500"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Regular Expression Denial of Service (ReDoS) in lodash",
+          "fixed_version": "4.17.21",
+          "source_type": "lockfile",
+          "canonical": "CVE-2020-28500",
+          "all_ids": [
+            "CVE-2020-28500",
+            "GHSA-29mw-wpgm-hmr9"
+          ]
+        },
+        {
+          "path": "package-lock.json",
+          "package": "lodash",
+          "version": "4.17.15",
+          "ecosystem": "npm",
+          "vuln_ids": [
+            "GHSA-xxjr-mmjv-4gpg"
+          ],
+          "aliases": [
+            "CVE-2025-13465"
+          ],
+          "severity": "MEDIUM",
+          "cvss": null,
+          "summary": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions",
+          "fixed_version": "4.17.23",
+          "source_type": "lockfile",
+          "canonical": "CVE-2025-13465",
+          "all_ids": [
+            "CVE-2025-13465",
+            "GHSA-xxjr-mmjv-4gpg"
+          ]
+        }
+      ]
+    }
+  ]
+}

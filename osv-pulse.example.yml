@@ -8,6 +8,8 @@ on:
     # true: only fail when this PR adds a new vulnerability.
     # false: fail on any known vulnerability in the project.
     diff_only: true
+    # Post one summary comment in the PR and update it on each push.
+    comment: true
   merge:
     enabled: true
   push:

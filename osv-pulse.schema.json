@@ -24,6 +24,11 @@
               "type": "boolean",
               "default": true,
               "description": "Only report vulnerabilities introduced by this pull request."
+            },
+            "comment": {
+              "type": "boolean",
+              "default": true,
+              "description": "Post and update a summary comment on the pull request."
             }
           }
         },

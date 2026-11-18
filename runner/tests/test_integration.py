@@ -60,6 +60,8 @@ Path(out).write_text(json.dumps(data), encoding="utf-8")
 
 class FakeGitHubClient:
     bodies: list[dict] = []
+    comments: list[dict] = []
+    comment_calls: list[str] = []
 
     def __init__(self, token, **kwargs):
         pass
@@ -68,10 +70,25 @@ class FakeGitHubClient:
         self.bodies.append(body)
         return 201, {}
 
+    def list_issue_comments(self, owner, repo, number):
+        return list(self.comments)
+
+    def create_issue_comment(self, owner, repo, number, body):
+        self.comments.append({"id": 1, "body": body})
+        self.comment_calls.append("create")
+        return 201, {}
+
+    def update_issue_comment(self, owner, repo, comment_id, body):
+        self.comments[0] = {"id": comment_id, "body": body}
+        self.comment_calls.append("update")
+        return 200, {}
+
 
 class IntegrationTests(unittest.TestCase):
     def setUp(self):
         FakeGitHubClient.bodies = []
+        FakeGitHubClient.comments = []
+        FakeGitHubClient.comment_calls = []
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.target = self.root / "target"
@@ -94,6 +111,7 @@ class IntegrationTests(unittest.TestCase):
             "repository": {"owner": "acme", "name": "shop", "fullName": "acme/shop"},
             "headSha": "a" * 40,
             "baseSha": "b" * 40,
+            "pr": {"number": 42},
         }
 
     def tearDown(self):
@@ -148,6 +166,22 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(body["conclusion"], "neutral")
         self.assertIn("skipped", body["output"]["title"])
         self.assertEqual(code, 0)
+    def test_pr_comment_is_created_with_findings(self):
+        self.run_main()
+        self.assertEqual(FakeGitHubClient.comment_calls, ["create"])
+        body = FakeGitHubClient.comments[0]["body"]
+        self.assertIn("osv-pulse:managed-comment", body)
+        self.assertIn("CVE-2024-0001", body)
+
+    def test_pr_comment_is_updated_not_duplicated(self):
+        self.run_main()
+        self.run_main()
+        self.assertEqual(FakeGitHubClient.comment_calls, ["create", "update"])
+        self.assertEqual(len(FakeGitHubClient.comments), 1)
+
+    def test_pr_comment_can_be_disabled(self):
+        self.run_main("version: 1\non:\n  pull_request:\n    comment: false\n")
+        self.assertEqual(FakeGitHubClient.comment_calls, [])
 
 
 if __name__ == "__main__":

@@ -60,3 +60,38 @@ class GitHubClient:
     ) -> tuple[int, dict[str, Any]]:
         path = f"/repos/{quote(owner, safe='')}/{quote(repo, safe='')}/check-runs"
         return self.request("POST", path, body)
+
+    def list_issue_comments(
+        self, owner: str, repo: str, number: int
+    ) -> list[dict[str, Any]]:
+        comments: list[dict[str, Any]] = []
+        for page in range(1, 11):
+            path = (
+                f"/repos/{quote(owner, safe='')}/{quote(repo, safe='')}"
+                f"/issues/{int(number)}/comments?per_page=100&page={page}"
+            )
+            status, data = self.request("GET", path)
+            if status >= 400 or not isinstance(data, list):
+                break
+            comments.extend(data)
+            if len(data) < 100:
+                break
+        return comments
+
+    def create_issue_comment(
+        self, owner: str, repo: str, number: int, body: str
+    ) -> tuple[int, dict[str, Any]]:
+        path = (
+            f"/repos/{quote(owner, safe='')}/{quote(repo, safe='')}"
+            f"/issues/{int(number)}/comments"
+        )
+        return self.request("POST", path, {"body": body})
+
+    def update_issue_comment(
+        self, owner: str, repo: str, comment_id: int, body: str
+    ) -> tuple[int, dict[str, Any]]:
+        path = (
+            f"/repos/{quote(owner, safe='')}/{quote(repo, safe='')}"
+            f"/issues/comments/{int(comment_id)}"
+        )
+        return self.request("PATCH", path, {"body": body})

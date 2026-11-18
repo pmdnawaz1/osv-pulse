@@ -19,7 +19,7 @@ Set these in the runner repository's **Settings → Secrets and variables → Ac
 | `OSV_PULSE_APP_ID` | GitHub App ID |
 | `OSV_PULSE_PRIVATE_KEY` | GitHub App private key (the `.pem` file contents) |
 
-The workflow uses `actions/create-github-app-token` to create a token that only works for the repository being scanned. That token is used for checkout and for publishing the check.
+The workflow uses `actions/create-github-app-token` to create a token that only works for the repository being scanned. That token is used for checkout, for publishing the check, and for the pull request comment. The GitHub App must have **Issues: Read & write** for the comment; if it does not, the runner logs a warning and continues.
 
 ## What the workflow does
 

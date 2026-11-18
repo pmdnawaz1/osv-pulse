@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: help setup worker-deps worker-dev worker-test runner-test test check \
-	install-scanner local-scan send-test-webhook deploy
+	install-scanner local-scan send-test-webhook example-findings deploy
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*## "} /^[a-z-]+:.*## / {printf "  %-22s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -35,6 +35,9 @@ local-scan: ## Run a local scan (use ARGS="--repo /path --format json")
 
 send-test-webhook: ## Send a signed sample webhook to the local Worker
 	bash scripts/send-test-webhook.sh
+
+example-findings: ## Regenerate example-projects CSV, JSON and finding docs
+	bash scripts/generate-example-findings.sh
 
 deploy: ## Deploy the Worker to Cloudflare
 	cd worker && npm run deploy

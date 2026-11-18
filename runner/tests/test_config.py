@@ -27,6 +27,7 @@ version: 1
 on:
   pull_request:
     diff_only: false
+    comment: false
   push:
     enabled: true
     branches: [main]
@@ -45,6 +46,7 @@ scan:
             config = load_config(root)
 
         self.assertFalse(config.pr_diff_only)
+        self.assertFalse(config.pr_comment_enabled)
         self.assertTrue(config.pr_enabled)
         self.assertTrue(config.push_enabled)
         self.assertTrue(config.scan_enabled_for("push", "main"))

@@ -20,6 +20,8 @@ from .github_client import GitHubClient
 from .models import Finding
 from .scanner import Scanner
 
+COMMENT_MARKER = "<!-- osv-pulse:managed-comment -->"
+
 
 def _env(name: str, default: str = "") -> str:
     return os.environ.get(name, default)
@@ -105,6 +107,14 @@ def render_summary(
     return "\n".join(lines)
 
 
+def pr_comment_body(summary: str, commit: str) -> str:
+    return (
+        f"{COMMENT_MARKER}\n\n"
+        f"{summary[:60000]}\n\n"
+        f"---\n\n_Updated automatically by osv-pulse for commit `{commit}`._\n"
+    )
+
+
 def main() -> int:
     payload = _load_payload()
     repository = payload.get("repository") or {}
@@ -113,6 +123,13 @@ def main() -> int:
     head_sha = str(payload.get("headSha", ""))
     mode = str(payload.get("mode", ""))
     branch = str(payload.get("branch") or "")
+    pr_number: int | None = None
+    try:
+        raw_number = (payload.get("pr") or {}).get("number")
+        if raw_number is not None:
+            pr_number = int(raw_number)
+    except (TypeError, ValueError):
+        pr_number = None
 
     work_dir = Path(_env("OSV_PULSE_WORKDIR", ".osv-pulse-work")).resolve()
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -144,6 +161,32 @@ def main() -> int:
             print(f"[osv-pulse] could not publish check: HTTP {status} {response}", flush=True)
         else:
             print(f"[osv-pulse] published check: {conclusion}", flush=True)
+
+    def publish_pr_comment(summary: str) -> None:
+        if client is None or not owner or not repo_name or pr_number is None:
+            return
+        body = pr_comment_body(summary, head_sha)
+        comments = client.list_issue_comments(owner, repo_name, pr_number)
+        existing = next(
+            (item for item in comments if COMMENT_MARKER in str(item.get("body", ""))),
+            None,
+        )
+        if existing:
+            status, response = client.update_issue_comment(
+                owner, repo_name, int(existing["id"]), body
+            )
+            action = "updated"
+        else:
+            status, response = client.create_issue_comment(owner, repo_name, pr_number, body)
+            action = "created"
+        if status >= 400:
+            print(
+                f"[osv-pulse] could not {action} PR comment: HTTP {status} {response}. "
+                "The App needs Issues: read and write to post comments.",
+                flush=True,
+            )
+        else:
+            print(f"[osv-pulse] {action} PR comment #{pr_number}", flush=True)
 
     try:
         config = load_config(target)
@@ -209,6 +252,11 @@ def main() -> int:
             summary += f"\n> Note: {warning}"
         publish(conclusion, f"osv-pulse: {len(findings)} finding(s)", summary, annotations)
         print(summary, flush=True)
+        if mode == "pr" and config.pr_comment_enabled:
+            try:
+                publish_pr_comment(summary)
+            except Exception as exc:
+                print(f"[osv-pulse] PR comment skipped: {exc}", flush=True)
         return 0
     except Exception as exc:
         traceback.print_exc()

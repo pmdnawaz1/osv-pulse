@@ -11,7 +11,7 @@ The actual scanning is done by [Google's OSV-Scanner](https://github.com/google/
 ## What you get
 
 - **One install, every repository.** Install the GitHub App once. New repositories are covered automatically.
-- **Checks where you already work.** Results appear as a GitHub check on the pull request, with comments on the exact line of the lockfile when OSV-Scanner can provide one.
+- **Checks and a PR comment where you already work.** Results appear as a GitHub check on the pull request, as a summary comment in the conversation, and as comments on the exact line of the lockfile when OSV-Scanner can provide one. The summary comment is updated on each push instead of creating a new one every time.
 - **No noise about old problems.** By default a pull request only fails if it introduces a vulnerability that was not there before.
 - **Rules per repository.** Add an optional `.osv-pulse.yml` to change triggers, set a severity level, or ignore a specific advisory for a limited time.
 - **Nothing runs from your project.** Only dependency files are read. No install scripts, no build steps, no code from the repository is executed.
@@ -86,6 +86,7 @@ Keep the runner repository private. Its logs contain repository names and scan r
    | Contents | Read-only | Check out the code and dependency files |
    | Checks | Read & write | Publish the result on the pull request |
    | Pull requests | Read-only | Read pull request details from the webhook |
+   | Issues | Read & write | Post and update the summary comment on pull requests |
 
 5. Subscribe to these events: **Pull request** and **Push**.
 6. Generate a **Private key** and save the `.pem` file. Put its contents in `OSV_PULSE_PRIVATE_KEY` above.
@@ -144,6 +145,7 @@ Configuration is optional. Without a config file the defaults are:
 | --- | --- |
 | Pull requests (`opened`, `synchronize`, `reopened`) | On, new findings only |
 | Merged pull requests | On, full repository scan |
+| PR summary comment | On, one comment updated on each push |
 | Direct pushes | Off |
 | Severity that fails a check | `HIGH` and above |
 | Block merging | Yes |
@@ -157,6 +159,7 @@ on:
   pull_request:
     enabled: true
     diff_only: true        # only count vulnerabilities added by this PR
+    comment: true          # post/update a summary comment in the PR
   merge:
     enabled: true
   push:
@@ -180,6 +183,7 @@ scan:
 ### A few things worth knowing
 
 - **New vs. all findings.** With `diff_only: true`, the runner scans the pull request commit and the base commit, then reports only findings that are not in the base scan. Set it to `false` if you want to see everything.
+- **PR comment.** `on.pull_request.comment: false` turns off the conversation comment. The check and the inline annotations are unaffected. If the App has not been granted `Issues: Read & write`, the runner logs a warning and skips the comment; it does not fail the check.
 - **Severity levels.** A finding blocks the check when its severity is at or above `fail_on_severity`. Use `NONE` to report findings without ever blocking. If a vulnerability has no usable severity label, it is treated as blocking so it is not missed.
 - **Warnings only.** `block_merge: false` publishes a `neutral` check instead of a failing one. The summary still lists everything that was found.
 - **Ignored advisories.** `ignore_cves` matches the advisory ID and all of its aliases, so you can list a `CVE-...` even if OSV reports it as a `GHSA-...`. An `expires` date is a safety net: after that date the ignore stops working. Dates use `YYYY-MM-DD`.
@@ -281,6 +285,18 @@ Run `make help` to see this list in your terminal.
 
 ---
 
+## Example projects
+
+`example-projects/` contains small fixtures with known vulnerable dependency versions, plus
+generated reports:
+
+- `findings.csv` — one row per finding
+- `findings.json` — full scan data
+- `findings/` — one document per advisory
+
+The reports come from real OSV-Scanner runs against the fixtures. See
+[`example-projects/README.md`](example-projects/README.md) for the details and regeneration command.
+
 ## Security notes
 
 - The Worker checks every webhook signature before doing anything else.
@@ -301,6 +317,7 @@ Run `make help` to see this list in your terminal.
 | No check appears on the PR | Confirm the App is installed on that repository and that both `Pull request` and `Push` events are subscribed. Check the runner job in Actions. |
 | Check says "Scan skipped by configuration" | That trigger is disabled in the repository's `.osv-pulse.yml` (or the default for pushes). |
 | Runner fails at token creation | `OSV_PULSE_APP_ID` or `OSV_PULSE_PRIVATE_KEY` is missing or wrong in the runner repository. |
+| No PR comment appears | Check `on.pull_request.comment` and make sure the App has `Issues: Read & write`. The runner log says which one is missing. |
 | Runner says "missing or invalid headSha" | The webhook was not from GitHub, or it was edited. Re-install the App and let GitHub send a fresh event. |
 | `dispatch_failed` in Worker logs | The `RUNNER_PAT` cannot write to the runner repository, or `RUNNER_OWNER` / `RUNNER_REPO` are wrong. |
 | "No dependency files were found" | The repo has no supported lockfile in the scanned paths, or `scan.paths` points somewhere else. |

@@ -16,7 +16,7 @@ SEVERITY_LEVELS = ("LOW", "MEDIUM", "HIGH", "CRITICAL", "NONE")
 DEFAULT_CONFIG: dict[str, Any] = {
     "version": 1,
     "on": {
-        "pull_request": {"enabled": True, "diff_only": True},
+        "pull_request": {"enabled": True, "diff_only": True, "comment": True},
         "merge": {"enabled": True},
         "push": {"enabled": False, "branches": []},
     },
@@ -56,6 +56,7 @@ class Config:
     version: int = 1
     pr_enabled: bool = True
     pr_diff_only: bool = True
+    pr_comment_enabled: bool = True
     merge_enabled: bool = True
     push_enabled: bool = False
     push_branches: list[str] = field(default_factory=list)
@@ -193,6 +194,9 @@ def parse_config(data: dict[str, Any] | None, config_file: str | None = None) ->
     return Config(
         pr_enabled=_as_bool(on["pull_request"]["enabled"], "on.pull_request.enabled"),
         pr_diff_only=_as_bool(on["pull_request"]["diff_only"], "on.pull_request.diff_only"),
+        pr_comment_enabled=_as_bool(
+            on["pull_request"].get("comment", True), "on.pull_request.comment"
+        ),
         merge_enabled=_as_bool(on["merge"]["enabled"], "on.merge.enabled"),
         push_enabled=_as_bool(on["push"]["enabled"], "on.push.enabled"),
         push_branches=_as_string_list(on["push"].get("branches"), "on.push.branches"),

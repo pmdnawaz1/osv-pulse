@@ -1,0 +1,7 @@
+version: 1
+
+# Only these two workspaces are scanned. A real monorepo might list many more.
+scan:
+  paths:
+    - frontend
+    - backend
