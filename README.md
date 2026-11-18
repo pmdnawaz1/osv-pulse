@@ -180,10 +180,23 @@ scan:
   exclude_paths: ["test/**", "examples/**"]
 ```
 
+### When is a pull request blocked?
+
+Ready-to-copy presets are in [`templates/`](templates/README.md). A merge is blocked only
+when **all** of these hold:
+
+1. The `pull_request` trigger is enabled.
+2. The finding is counted — with `diff_only: true`, pre-existing findings are excluded, and `ignore_cves` removes matching advisories.
+3. Its severity is at or above `policy.fail_on_severity`. Advisories with no severity label count as blocking.
+4. `policy.block_merge: true`.
+5. Your branch protection rule requires the `osv-pulse` check to pass. Without that rule, the check can show as failed but GitHub still allows the merge.
+
+`block_merge: false` publishes a `neutral` check instead of a failing one, so nothing is blocked.
+
 ### A few things worth knowing
 
 - **New vs. all findings.** With `diff_only: true`, the runner scans the pull request commit and the base commit, then reports only findings that are not in the base scan. Set it to `false` if you want to see everything.
-- **PR comment.** `on.pull_request.comment: false` turns off the conversation comment. The check and the inline annotations are unaffected. If the App has not been granted `Issues: Read & write`, the runner logs a warning and skips the comment; it does not fail the check.
+- **PR comment.** `on.pull_request.comment: false` turns off the conversation comment. The check and the inline annotations are unaffected. If the App has not been granted `Issues: Read & write`, the runner logs a warning and skips the comment; it does not fail the check. The comment links to the runner job where `findings.csv` is uploaded as an artifact; viewing it requires access to the private runner repository.
 - **Severity levels.** A finding blocks the check when its severity is at or above `fail_on_severity`. Use `NONE` to report findings without ever blocking. If a vulnerability has no usable severity label, it is treated as blocking so it is not missed.
 - **Warnings only.** `block_merge: false` publishes a `neutral` check instead of a failing one. The summary still lists everything that was found.
 - **Ignored advisories.** `ignore_cves` matches the advisory ID and all of its aliases, so you can list a `CVE-...` even if OSV reports it as a `GHSA-...`. An `expires` date is a safety net: after that date the ignore stops working. Dates use `YYYY-MM-DD`.

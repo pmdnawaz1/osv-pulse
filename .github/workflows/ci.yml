@@ -37,7 +37,11 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -r runner/requirements.txt
-      - name: Check config example parses
-        run: PYTHONPATH=runner python3 -m osv_pulse.local --config osv-pulse.example.yml --check-config
+      - name: Check config examples parse
+        run: |
+          PYTHONPATH=runner python3 -m osv_pulse.local --config osv-pulse.example.yml --check-config >/dev/null
+          for f in templates/.osv-pulse.*.yml; do
+            PYTHONPATH=runner python3 -m osv_pulse.local --config "$f" --check-config >/dev/null
+          done
       - name: Tests
         run: PYTHONPATH=runner python3 -m unittest discover -s runner/tests -v

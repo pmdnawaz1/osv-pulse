@@ -9,8 +9,6 @@ Examples:
 from __future__ import annotations
 
 import argparse
-import csv
-import io
 import json
 import os
 import sys
@@ -21,6 +19,7 @@ import yaml
 
 from .config import SEVERITY_LEVELS, Config, ConfigError, load_config, parse_config
 from .main import render_summary
+from .report import render_csv
 from .scanner import Scanner
 
 
@@ -53,51 +52,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Validate and print the resolved config, then exit",
     )
     return parser
-
-
-CSV_COLUMNS = (
-    "repository",
-    "mode",
-    "file",
-    "package",
-    "version",
-    "ecosystem",
-    "advisory",
-    "aliases",
-    "severity",
-    "cvss",
-    "fixed_version",
-    "blocking",
-    "summary",
-    "url",
-)
-
-
-def render_csv(findings, blocking_ids: set[str], repo: Path, mode: str) -> str:
-    """Return a flat CSV report, one row per finding."""
-    buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=CSV_COLUMNS)
-    writer.writeheader()
-    for finding in findings:
-        writer.writerow(
-            {
-                "repository": str(repo),
-                "mode": mode,
-                "file": finding.path,
-                "package": finding.package,
-                "version": finding.version,
-                "ecosystem": finding.ecosystem,
-                "advisory": finding.canonical,
-                "aliases": ";".join(sorted(finding.all_ids - {finding.canonical})),
-                "severity": finding.severity,
-                "cvss": "" if finding.cvss is None else finding.cvss,
-                "fixed_version": finding.fixed_version or "",
-                "blocking": "yes" if finding.canonical in blocking_ids else "no",
-                "summary": finding.summary,
-                "url": f"https://osv.dev/vulnerability/{finding.canonical}",
-            }
-        )
-    return buffer.getvalue()
 
 
 def load_local_config(repo: Path, config_path: str | None) -> Config:

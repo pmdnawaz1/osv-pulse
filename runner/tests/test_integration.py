@@ -127,6 +127,8 @@ class IntegrationTests(unittest.TestCase):
             "OSV_PULSE_WORKDIR": str(self.work),
             "OSV_PULSE_TOKEN": "test-token",
             "OSV_SCANNER_BIN": str(self.scanner),
+            "GITHUB_REPOSITORY": "acme/osv-pulse-runner",
+            "GITHUB_RUN_ID": "123456",
         }
         with patch.dict(os.environ, env), patch.object(main, "GitHubClient", FakeGitHubClient):
             return main.main()
@@ -172,6 +174,10 @@ class IntegrationTests(unittest.TestCase):
         body = FakeGitHubClient.comments[0]["body"]
         self.assertIn("osv-pulse:managed-comment", body)
         self.assertIn("CVE-2024-0001", body)
+        self.assertIn("acme/osv-pulse-runner/actions/runs/123456", body)
+        csv_text = (self.work / "findings.csv").read_text(encoding="utf-8")
+        self.assertIn("CVE-2024-0001", csv_text)
+        self.assertIn("acme/shop", csv_text)
 
     def test_pr_comment_is_updated_not_duplicated(self):
         self.run_main()

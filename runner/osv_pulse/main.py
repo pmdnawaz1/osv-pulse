@@ -18,6 +18,7 @@ from .annotations import build_annotations
 from .config import ConfigError, load_config
 from .github_client import GitHubClient
 from .models import Finding
+from .report import render_csv
 from .scanner import Scanner
 
 COMMENT_MARKER = "<!-- osv-pulse:managed-comment -->"
@@ -107,12 +108,27 @@ def render_summary(
     return "\n".join(lines)
 
 
-def pr_comment_body(summary: str, commit: str) -> str:
-    return (
+def job_run_url() -> str:
+    server = _env("GITHUB_SERVER_URL", "https://github.com")
+    repository = _env("GITHUB_REPOSITORY")
+    run_id = _env("GITHUB_RUN_ID")
+    if repository and run_id:
+        return f"{server}/{repository}/actions/runs/{run_id}"
+    return ""
+
+
+def pr_comment_body(summary: str, commit: str, run_url: str = "") -> str:
+    body = (
         f"{COMMENT_MARKER}\n\n"
         f"{summary[:60000]}\n\n"
         f"---\n\n_Updated automatically by osv-pulse for commit `{commit}`._\n"
     )
+    if run_url:
+        body += (
+            f"\nCSV report: [runner job artifacts]({run_url}) "
+            "(requires access to the runner repository).\n"
+        )
+    return body
 
 
 def main() -> int:
@@ -165,7 +181,7 @@ def main() -> int:
     def publish_pr_comment(summary: str) -> None:
         if client is None or not owner or not repo_name or pr_number is None:
             return
-        body = pr_comment_body(summary, head_sha)
+        body = pr_comment_body(summary, head_sha, job_run_url())
         comments = client.list_issue_comments(owner, repo_name, pr_number)
         existing = next(
             (item for item in comments if COMMENT_MARKER in str(item.get("body", ""))),
@@ -231,6 +247,17 @@ def main() -> int:
         all_ids = {value for item in findings for value in item.all_ids}
         blocking_ids = {value for item in blocking for value in item.all_ids}
         annotations, truncated = build_annotations(sarif_path, target, all_ids, blocking_ids)
+
+        csv_path = work_dir / "findings.csv"
+        csv_path.write_text(
+            render_csv(
+                findings,
+                {item.canonical for item in blocking},
+                f"{owner}/{repo_name}",
+                "diff" if mode == "pr" else "full",
+            ),
+            encoding="utf-8",
+        )
 
         if not blocking:
             conclusion = "success"

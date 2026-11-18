@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from osv_pulse.local import render_csv
+from osv_pulse.report import render_csv
 from osv_pulse.models import parse_findings
 
 SAMPLE = {

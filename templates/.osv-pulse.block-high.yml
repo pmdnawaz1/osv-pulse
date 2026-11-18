@@ -1,0 +1,20 @@
+version: 1
+
+on:
+  pull_request:
+    enabled: true
+    diff_only: true
+    comment: true
+  merge:
+    enabled: true
+  push:
+    enabled: false
+
+policy:
+  fail_on_severity: HIGH
+  block_merge: true
+  ignore_cves: []
+
+scan:
+  paths: ["."]
+  exclude_paths: []

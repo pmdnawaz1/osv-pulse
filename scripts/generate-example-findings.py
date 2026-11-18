@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "runner"))
 
-from osv_pulse.local import CSV_COLUMNS  # noqa: E402
+from osv_pulse.report import CSV_COLUMNS  # noqa: E402
 
 PROJECTS: dict[str, tuple[str, list[str]]] = {
     "npm-legacy-lockfile": ("example-projects/npm-legacy-lockfile", []),

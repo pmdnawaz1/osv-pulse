@@ -1,6 +1,6 @@
 # Findings index
 
-Generated from OSV-Scanner 2.7.1 on 2026-11-18 23:39 UTC.
+Generated from OSV-Scanner 2.7.1 on 2026-11-18 23:53 UTC.
 
 17 distinct advisories across 27 findings.
 
