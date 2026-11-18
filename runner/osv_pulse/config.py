@@ -9,8 +9,9 @@ from typing import Any
 
 import yaml
 
+from .models import SEVERITY_RANK
+
 SEVERITY_LEVELS = ("LOW", "MEDIUM", "HIGH", "CRITICAL", "NONE")
-SEVERITY_RANK = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "version": 1,

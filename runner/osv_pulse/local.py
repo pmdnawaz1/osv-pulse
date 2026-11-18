@@ -115,7 +115,7 @@ def run(argv: list[str] | None = None) -> int:
                     "repo": str(repo),
                     "mode": "diff" if args.diff_against else "full",
                     "config": _config_to_dict(config),
-                    "findings": [asdict(item) for item in findings],
+                    "findings": [_finding_to_dict(item) for item in findings],
                     "blocking_ids": sorted({item.canonical for item in blocking}),
                     "baseline_count": baseline_count,
                     "ignored_count": ignored_count,
@@ -146,6 +146,13 @@ def run(argv: list[str] | None = None) -> int:
     except (OSError, ValueError) as exc:
         print(f"osv-pulse: scan failed: {exc}", file=sys.stderr)
         return 2
+
+
+def _finding_to_dict(finding) -> dict[str, object]:
+    data = asdict(finding)
+    data["canonical"] = finding.canonical
+    data["all_ids"] = sorted(finding.all_ids)
+    return data
 
 
 def _config_to_dict(config: Config) -> dict[str, object]:

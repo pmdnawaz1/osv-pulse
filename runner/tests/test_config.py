@@ -86,6 +86,17 @@ scan:
         with self.assertRaises(ConfigError):
             parse_config({"policy": {"ignore_cves": [{"id": "x", "expires": "next week"}]}})
 
+    def test_high_threshold_only_blocks_high_and_above(self):
+        from types import SimpleNamespace
+
+        config = parse_config({})
+        medium = SimpleNamespace(severity="MEDIUM", rank=2)
+        high = SimpleNamespace(severity="HIGH", rank=3)
+        unknown = SimpleNamespace(severity="UNKNOWN", rank=0)
+        self.assertFalse(config.is_blocking(medium))
+        self.assertTrue(config.is_blocking(high))
+        self.assertTrue(config.is_blocking(unknown))
+
     def test_none_threshold_never_blocks(self):
         config = parse_config({"policy": {"fail_on_severity": "NONE"}})
 
