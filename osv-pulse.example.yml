@@ -1,0 +1,39 @@
+# Copy to .osv-pulse.yml in a repository root to change the defaults.
+# Every field is optional. Unknown fields are ignored.
+version: 1
+
+on:
+  pull_request:
+    enabled: true
+    # true: only fail when this PR adds a new vulnerability.
+    # false: fail on any known vulnerability in the project.
+    diff_only: true
+  merge:
+    enabled: true
+  push:
+    enabled: false
+    # When empty, all branches are included. Remove push entirely to disable.
+    branches: [main, production]
+
+policy:
+  # LOW | MEDIUM | HIGH | CRITICAL | NONE
+  # NONE reports findings but never blocks.
+  fail_on_severity: HIGH
+  # false publishes a neutral check instead of a failing one.
+  block_merge: true
+  ignore_cves:
+    - id: GHSA-xxxx-xxxx-xxxx
+      reason: "Not used by our runtime; upgrade planned for Q4"
+      # Ignored until this date, then the rule stops applying.
+      expires: "2026-12-31"
+    # Short form is also fine:
+    # - CVE-2024-12345
+
+scan:
+  # Files or directories to scan. "." means the whole repository.
+  paths:
+    - "."
+  # Directories to skip. Glob patterns are supported.
+  exclude_paths:
+    - "test/**"
+    - "examples/**"

@@ -1,0 +1,21 @@
+{
+  "name": "osv-pulse-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Receives GitHub webhooks and forwards scan requests to the runner repository.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.9",
+    "wrangler": "^3.99.0"
+  }
+}

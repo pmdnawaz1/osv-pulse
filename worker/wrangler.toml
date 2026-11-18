@@ -1,0 +1,14 @@
+# Cloudflare Worker settings.
+# Cloudflare docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "osv-pulse"
+main = "src/index.ts"
+compatibility_date = "2025-07-18"
+
+# Optional: keep request logs visible with `wrangler tail`.
+[observability]
+enabled = true
+
+# Non-secret values. Secrets are set with `wrangler secret put` (see .dev.vars.example).
+[vars]
+DISPATCH_EVENT_TYPE = "osv-pulse-scan"

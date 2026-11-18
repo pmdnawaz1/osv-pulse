@@ -1,0 +1,13 @@
+{
+  "ref": "refs/heads/production",
+  "before": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "after": "dddddddddddddddddddddddddddddddddddddddd",
+  "deleted": false,
+  "repository": {
+    "full_name": "acme/shop",
+    "name": "shop",
+    "owner": { "login": "acme" }
+  },
+  "installation": { "id": 12345 },
+  "pusher": { "name": "alice" }
+}

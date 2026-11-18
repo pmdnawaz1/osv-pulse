@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/osv-pulse/osv-pulse/main/osv-pulse.schema.json",
+  "title": "osv-pulse configuration",
+  "description": "Optional per-repository configuration for osv-pulse.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Configuration format version."
+    },
+    "on": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pull_request": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "diff_only": {
+              "type": "boolean",
+              "default": true,
+              "description": "Only report vulnerabilities introduced by this pull request."
+            }
+          }
+        },
+        "merge": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": true }
+          }
+        },
+        "push": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "branches": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Empty means every branch."
+            }
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fail_on_severity": {
+          "type": "string",
+          "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL", "NONE"],
+          "default": "HIGH"
+        },
+        "block_merge": { "type": "boolean", "default": true },
+        "ignore_cves": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "reason": { "type": "string" },
+                  "expires": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Last day this ignore applies (YYYY-MM-DD)."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "scan": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["."]
+        },
+        "exclude_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

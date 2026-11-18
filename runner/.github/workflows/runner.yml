@@ -1,0 +1,144 @@
+name: osv-pulse scan
+
+# This workflow lives in the private runner repository. It is started by the
+# Cloudflare Worker through a repository_dispatch event.
+on:
+  repository_dispatch:
+    types: [osv-pulse-scan]
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: 'Request JSON (same shape as the worker client_payload)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  OSV_SCANNER_VERSION: v2.7.1
+  PAYLOAD_DISPATCH: ${{ toJSON(github.event.client_payload) }}
+  PAYLOAD_MANUAL: ${{ github.event.inputs.payload }}
+
+jobs:
+  scan:
+    name: Scan ${{ github.event.client_payload.repository.fullName }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Get runner scripts
+        uses: actions/checkout@v4
+        with:
+          path: osv-pulse-scripts
+          persist-credentials: false
+
+      - name: Read the request
+        id: req
+        shell: bash
+        env:
+          PAYLOAD_FILE: ${{ runner.temp }}/osv-pulse-payload.json
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, re
+
+          raw = (os.environ.get("PAYLOAD_MANUAL") or os.environ.get("PAYLOAD_DISPATCH") or "{}").strip()
+          data = json.loads(raw) if raw else {}
+          repo = data.get("repository") or {}
+
+          head = str(data.get("headSha", ""))
+          base = str(data.get("baseSha", ""))
+          sha_pattern = re.compile(r"^[0-9a-f]{40}([0-9a-f]{24})?$", re.IGNORECASE)
+          if not sha_pattern.fullmatch(head):
+              raise SystemExit("missing or invalid headSha in request")
+          if not sha_pattern.fullmatch(base):
+              base = ""
+
+          values = {
+              "owner": str(repo.get("owner", "")),
+              "name": str(repo.get("name", "")),
+              "full_name": str(repo.get("fullName", "")),
+              "head": head,
+              "base": base,
+              "mode": str(data.get("mode", "")),
+              "branch": str(data.get("branch", "")),
+          }
+          if not all(values[k] for k in ("owner", "name", "full_name")):
+              raise SystemExit("missing repository details in request")
+
+          with open(os.environ["PAYLOAD_FILE"], "w", encoding="utf-8") as handle:
+              handle.write(raw)
+
+          for key, value in values.items():
+              print(f"{key}={value}")
+          PY
+
+      - name: Create an installation token for the target repository
+        id: token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.OSV_PULSE_APP_ID }}
+          private-key: ${{ secrets.OSV_PULSE_PRIVATE_KEY }}
+          owner: ${{ steps.req.outputs.owner }}
+          repositories: ${{ steps.req.outputs.name }}
+
+      - name: Check out the target repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.req.outputs.full_name }}
+          ref: ${{ steps.req.outputs.head }}
+          token: ${{ steps.token.outputs.token }}
+          path: target
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the base commit for comparison
+        if: steps.req.outputs.mode == 'pr' && steps.req.outputs.base != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ steps.req.outputs.base }}"
+          git -C target cat-file -e "${BASE}^{commit}" 2>/dev/null || \
+            git -C target fetch --no-tags --depth=1 origin "$BASE"
+          git -C target worktree add --detach "$GITHUB_WORKSPACE/target-base" "$BASE"
+
+      - name: Install osv-scanner
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_URL="https://github.com/google/osv-scanner/releases/download/${OSV_SCANNER_VERSION}"
+          curl -fsSLO "${BASE_URL}/osv-scanner_linux_amd64"
+          curl -fsSLO "${BASE_URL}/osv-scanner_SHA256SUMS"
+          grep 'osv-scanner_linux_amd64$' osv-scanner_SHA256SUMS | sha256sum --check -
+          chmod +x osv-scanner_linux_amd64
+          echo "OSV_SCANNER_BIN=$PWD/osv-scanner_linux_amd64" >> "$GITHUB_ENV"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runner dependencies
+        run: pip install -r osv-pulse-scripts/runner/requirements.txt
+
+      - name: Scan and publish the check
+        shell: bash
+        env:
+          OSV_PULSE_TOKEN: ${{ steps.token.outputs.token }}
+          OSV_PULSE_PAYLOAD_FILE: ${{ runner.temp }}/osv-pulse-payload.json
+          OSV_PULSE_WORKDIR: ${{ runner.temp }}/osv-pulse-work
+          OSV_PULSE_TARGET_DIR: ${{ github.workspace }}/target
+          OSV_PULSE_BASE_DIR: ${{ github.workspace }}/target-base
+        run: |
+          mkdir -p "$OSV_PULSE_WORKDIR"
+          python3 osv-pulse-scripts/runner/osv_pulse/main.py
+
+      - name: Keep scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: osv-pulse-results
+          path: ${{ runner.temp }}/osv-pulse-work
+          if-no-files-found: ignore
+          retention-days: 14

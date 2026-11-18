@@ -1,0 +1,7 @@
+# Copy to .dev.vars for `wrangler dev` (Cloudflare loads it automatically).
+# .dev.vars is git-ignored. Never commit real values.
+
+GITHUB_WEBHOOK_SECRET=local-development-secret
+RUNNER_PAT=github_pat_replace_me
+RUNNER_OWNER=your-org-or-username
+RUNNER_REPO=osv-pulse-runner

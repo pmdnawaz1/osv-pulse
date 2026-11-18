@@ -1,0 +1,19 @@
+# Local configuration and secrets
+worker/.dev.vars
+*.pem
+
+# Local tooling
+.venv/
+bin/
+node_modules/
+.osv-pulse-work/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store

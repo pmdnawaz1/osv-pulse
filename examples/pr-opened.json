@@ -1,0 +1,24 @@
+{
+  "action": "opened",
+  "delivery_id": "test-delivery-0001",
+  "repository": {
+    "full_name": "acme/shop",
+    "name": "shop",
+    "owner": { "login": "acme" }
+  },
+  "installation": { "id": 12345 },
+  "pull_request": {
+    "number": 42,
+    "merged": false,
+    "merge_commit_sha": null,
+    "head": {
+      "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ref": "feature/upgrade-deps"
+    },
+    "base": {
+      "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "ref": "main"
+    }
+  },
+  "sender": { "login": "alice" }
+}

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  worker:
+    name: Worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install packages
+        run: npm install --no-audit --no-fund
+        working-directory: worker
+      - name: Type check
+        run: npm run typecheck
+        working-directory: worker
+      - name: Tests
+        run: npm test
+        working-directory: worker
+
+  runner:
+    name: Runner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r runner/requirements.txt
+      - name: Check config example parses
+        run: PYTHONPATH=runner python3 -m osv_pulse.local --config osv-pulse.example.yml --check-config
+      - name: Tests
+        run: PYTHONPATH=runner python3 -m unittest discover -s runner/tests -v
